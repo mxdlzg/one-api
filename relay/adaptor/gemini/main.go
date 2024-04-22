@@ -156,7 +156,7 @@ type ChatPromptFeedback struct {
 
 func getToolCalls(candidate *ChatCandidate) []model.Tool {
 	var toolCalls []model.Tool
-	if len(candidate.Content.Parts.Text) == 0 {
+	if len(candidate.Content.Parts[0].Text) == 0 {
 		return toolCalls
 	}
 	item := candidate.Content.Parts[0]
@@ -166,7 +166,10 @@ func getToolCalls(candidate *ChatCandidate) []model.Tool {
 	toolCall := model.Tool{
 		Id:       fmt.Sprintf("call_%s", random.GetUUID()),
 		Type:     "function",
-		Function: *item.FunctionCall,
+		Function: model.Function{
+			Arguments: *item.FunctionCall.Args,
+			Name: *item.FunctionCall.Name,
+		},
 	}
 	toolCalls = append(toolCalls, toolCall)
 	return toolCalls
@@ -185,7 +188,7 @@ func responseGeminiChat2OpenAI(response *ChatResponse) *openai.TextResponse {
 			Message: model.Message{
 				Role:    "assistant",
 				Content: "",
-				ToolCalls: getToolCalls(candidate),
+				ToolCalls: getToolCalls(&candidate),
 			},
 			FinishReason: constant.StopFinishReason,
 		}
@@ -287,7 +290,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	logger.Debugf(ctx, "response body: %s\n", responseBody)
+	logger.Debugf(c, "response body: %s\n", responseBody)
 	var geminiResponse ChatResponse
 	err = json.Unmarshal(responseBody, &geminiResponse)
 	if err != nil {
