@@ -138,7 +138,7 @@ func (g *ChatResponse) GetResponseText() string {
 	return ""
 }
 
-type ChatCandidate struct {
+type ChatCandidate struct {``
 	Content       ChatContent        `json:"content"`
 	FinishReason  string             `json:"finishReason"`
 	Index         int64              `json:"index"`
@@ -154,6 +154,24 @@ type ChatPromptFeedback struct {
 	SafetyRatings []ChatSafetyRating `json:"safetyRatings"`
 }
 
+func getToolCalls(candidate *ChatCandidate) []model.Tool {
+	var toolCalls []model.Tool
+	if len(candidate.Content.Parts.Text) == 0 {
+		return toolCalls
+	}
+	item := candidate.Content.Parts[0]
+	if item.FunctionCall == nil {
+		return toolCalls
+	}
+	toolCall := model.Tool{
+		Id:       fmt.Sprintf("call_%s", random.GetUUID()),
+		Type:     "function",
+		Function: *item.FunctionCall,
+	}
+	toolCalls = append(toolCalls, toolCall)
+	return toolCalls
+}
+
 func responseGeminiChat2OpenAI(response *ChatResponse) *openai.TextResponse {
 	fullTextResponse := openai.TextResponse{
 		Id:      fmt.Sprintf("chatcmpl-%s", random.GetUUID()),
@@ -167,10 +185,11 @@ func responseGeminiChat2OpenAI(response *ChatResponse) *openai.TextResponse {
 			Message: model.Message{
 				Role:    "assistant",
 				Content: "",
+				ToolCalls: getToolCalls(candidate)
 			},
 			FinishReason: constant.StopFinishReason,
 		}
-		if len(candidate.Content.Parts) > 0 {
+		if len(candidate.Content.Parts) > 0 &&  {
 			choice.Message.Content = candidate.Content.Parts[0].Text
 		}
 		fullTextResponse.Choices = append(fullTextResponse.Choices, choice)
@@ -268,6 +287,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
+	logger.Debugf(ctx, "response body: %s\n", responseBody)
 	var geminiResponse ChatResponse
 	err = json.Unmarshal(responseBody, &geminiResponse)
 	if err != nil {
