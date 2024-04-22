@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/songquanpeng/one-api/common/logger"
 	"github.com/songquanpeng/one-api/relay/client"
 	"github.com/songquanpeng/one-api/relay/meta"
 	"io"
@@ -20,6 +21,7 @@ func SetupCommonRequestHeader(c *gin.Context, req *http.Request, meta *meta.Meta
 
 func DoRequestHelper(a Adaptor, c *gin.Context, meta *meta.Meta, requestBody io.Reader) (*http.Response, error) {
 	fullRequestURL, err := a.GetRequestURL(meta)
+	logger.Debugf(c, "URL for converted request: \n%s", string(fullRequestURL))
 	if err != nil {
 		return nil, fmt.Errorf("get request url failed: %w", err)
 	}
