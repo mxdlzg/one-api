@@ -167,8 +167,8 @@ func getToolCalls(candidate *ChatCandidate) []model.Tool {
 		Id:       fmt.Sprintf("call_%s", random.GetUUID()),
 		Type:     "function",
 		Function: model.Function{
-			Arguments: *item.FunctionCall.Args,
-			Name: *item.FunctionCall.Name,
+			Arguments: item.FunctionCall.Args,
+			Name: item.FunctionCall.Name,
 		},
 	}
 	toolCalls = append(toolCalls, toolCall)
