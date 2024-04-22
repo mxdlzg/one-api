@@ -138,7 +138,7 @@ func (g *ChatResponse) GetResponseText() string {
 	return ""
 }
 
-type ChatCandidate struct {``
+type ChatCandidate struct {
 	Content       ChatContent        `json:"content"`
 	FinishReason  string             `json:"finishReason"`
 	Index         int64              `json:"index"`
@@ -185,11 +185,11 @@ func responseGeminiChat2OpenAI(response *ChatResponse) *openai.TextResponse {
 			Message: model.Message{
 				Role:    "assistant",
 				Content: "",
-				ToolCalls: getToolCalls(candidate)
+				ToolCalls: getToolCalls(candidate),
 			},
 			FinishReason: constant.StopFinishReason,
 		}
-		if len(candidate.Content.Parts) > 0 &&  {
+		if len(candidate.Content.Parts) > 0 {
 			choice.Message.Content = candidate.Content.Parts[0].Text
 		}
 		fullTextResponse.Choices = append(fullTextResponse.Choices, choice)
