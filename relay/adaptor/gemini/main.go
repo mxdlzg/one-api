@@ -171,11 +171,16 @@ func getToolCalls(candidate *ChatCandidate) []model.Tool {
 	if item.FunctionCall == nil {
 		return toolCalls
 	}
+	argsBytes, err := json.Marshal(item.FunctionCall.Arguments)
+	if err != nil {
+		logger.FatalLog("getToolCalls failed: " + err.Error())
+		return toolCalls
+	}
 	toolCall := model.Tool{
 		Id:   fmt.Sprintf("call_%s", random.GetUUID()),
 		Type: "function",
 		Function: model.Function{
-			Arguments: item.FunctionCall.Arguments,
+			Arguments: string(argsBytes),
 			Name:      item.FunctionCall.FunctionName,
 		},
 	}
