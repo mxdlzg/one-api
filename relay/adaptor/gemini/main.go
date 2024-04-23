@@ -157,7 +157,6 @@ type ChatPromptFeedback struct {
 
 func getToolCalls(candidate *ChatCandidate) []model.Tool {
 	var toolCalls []model.Tool
-
 	item := candidate.Content.Parts[0]
 	if item.FunctionCall == nil {
 		return toolCalls
@@ -290,6 +289,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
+	logger.Debugf(c, "response body: %s\n", responseBody)
 	var geminiResponse ChatResponse
 	err = json.Unmarshal(responseBody, &geminiResponse)
 	if err != nil {
