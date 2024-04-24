@@ -203,11 +203,15 @@ func responseGeminiChat2OpenAI(response *ChatResponse) *openai.TextResponse {
 			},
 			FinishReason: constant.StopFinishReason,
 		}
-		if candidate.Content.Parts[i].FunctionCall != nil {
-			choice.Message.ToolCalls = getToolCalls(&candidate)
-		} else if len(candidate.Content.Parts) > 0 {
-			choice.Message.Content = candidate.Content.Parts[i].Text
-
+		if len(candidate.Content.Parts) > 0 {
+			if candidate.Content.Parts[0].FunctionCall != nil {
+				choice.Message.ToolCalls = getToolCalls(&candidate)
+			} else {
+				choice.Message.Content = candidate.Content.Parts[0].Text
+			}
+		} else {
+			choice.Message.Content = ""
+			choice.FinishReason = candidate.FinishReason
 		}
 		fullTextResponse.Choices = append(fullTextResponse.Choices, choice)
 	}
