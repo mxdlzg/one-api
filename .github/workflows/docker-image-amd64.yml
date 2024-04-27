@@ -20,6 +20,9 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Get tags
+        run: git fetch --tags origin
+
       - name: Check repository URL
         run: |
           REPO_URL=$(git config --get remote.origin.url)
