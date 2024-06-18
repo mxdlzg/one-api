@@ -114,6 +114,10 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 		if content.Role == "system" {
 			content.Role = "user"
 			shouldAddDummyModelMessage = true
+			// Prevent empty Parts.Text from appearing in the system role
+			if content.Parts[0].Text == "" {
+				content.Parts[0].Text = "empty"
+			}
 		}
 		geminiRequest.Contents = append(geminiRequest.Contents, content)
 
