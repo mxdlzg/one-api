@@ -98,29 +98,51 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 				},
 			},
 		}
-		openaiContent := message.ParseContent()
-		var parts []Part
-		imageNum := 0
-		for _, part := range openaiContent {
-			if part.Type == model.ContentTypeText {
-				parts = append(parts, Part{
-					Text: part.Text,
-				})
-			} else if part.Type == model.ContentTypeImageURL {
-				imageNum += 1
-				if imageNum > VisionMaxImageNum {
-					continue
-				}
-				mimeType, data, _ := image.GetImageFromUrl(part.ImageURL.Url)
-				parts = append(parts, Part{
-					InlineData: &InlineData{
-						MimeType: mimeType,
-						Data:     data,
-					},
-				})
+		if message.Role == "tool" {
+			content.Role = "user"
+			content.Parts[0].Text = ""
+			content.Parts[0].FunctionResponse = &FunctionResponse{
+				FunctionName: message.ToolCallId,
+				Response: map[string]interface{}{
+					"result": message.Content,
+				},
 			}
+		} else if message.Role == "assistant" && message.ToolCalls != nil {
+			content.Role = "model"
+			content.Parts[0].Text = ""
+
+			inputParam := make(map[string]any)
+			_ = json.Unmarshal([]byte(message.ToolCalls[0].Function.Arguments.(string)), &inputParam)
+
+			content.Parts[0].FunctionCall = &FunctionCall{
+				FunctionName: message.ToolCalls[0].Function.Name,
+				Arguments:    inputParam,
+			}
+		} else {
+			openaiContent := message.ParseContent()
+			var parts []Part
+			imageNum := 0
+			for _, part := range openaiContent {
+				if part.Type == model.ContentTypeText {
+					parts = append(parts, Part{
+						Text: part.Text,
+					})
+				} else if part.Type == model.ContentTypeImageURL {
+					imageNum += 1
+					if imageNum > VisionMaxImageNum {
+						continue
+					}
+					mimeType, data, _ := image.GetImageFromUrl(part.ImageURL.Url)
+					parts = append(parts, Part{
+						InlineData: &InlineData{
+							MimeType: mimeType,
+							Data:     data,
+						},
+					})
+				}
+			}
+			content.Parts = parts
 		}
-		content.Parts = parts
 
 		// there's no assistant role in gemini and API shall vomit if Role is not user or model
 		if content.Role == "assistant" {
