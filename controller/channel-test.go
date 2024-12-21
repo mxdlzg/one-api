@@ -80,6 +80,9 @@ func testChannel(channel *model.Channel, request *relaymodel.GeneralOpenAIReques
 			modelName = modelMap[modelName]
 		}
 	}
+	if modelMap != nil && modelMap[modelName] != "" {
+		modelName = modelMap[modelName]
+	}
 	meta.OriginModelName, meta.ActualModelName = request.Model, modelName
 	request.Model = modelName
 	convertedRequest, err := adaptor.ConvertRequest(c, relaymode.ChatCompletions, request)

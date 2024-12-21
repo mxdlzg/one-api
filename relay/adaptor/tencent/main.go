@@ -8,12 +8,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/songquanpeng/one-api/common/render"
 
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common"
@@ -39,8 +40,8 @@ func ConvertRequest(request model.GeneralOpenAIRequest) *ChatRequest {
 		Model:       &request.Model,
 		Stream:      &request.Stream,
 		Messages:    messages,
-		TopP:        &request.TopP,
-		Temperature: &request.Temperature,
+		TopP:        request.TopP,
+		Temperature: request.Temperature,
 	}
 }
 

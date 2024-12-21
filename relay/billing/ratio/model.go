@@ -79,8 +79,10 @@ var ModelRatio = map[string]float64{
 	"claude-2.0":                 8.0 / 1000 * USD,
 	"claude-2.1":                 8.0 / 1000 * USD,
 	"claude-3-haiku-20240307":    0.25 / 1000 * USD,
+	"claude-3-5-haiku-20241022":  1.0 / 1000 * USD,
 	"claude-3-sonnet-20240229":   3.0 / 1000 * USD,
 	"claude-3-5-sonnet-20240620": 3.0 / 1000 * USD,
+	"claude-3-5-sonnet-20241022": 3.0 / 1000 * USD,
 	"claude-3-opus-20240229":     15.0 / 1000 * USD,
 	// https://cloud.baidu.com/doc/WENXINWORKSHOP/s/hlrk4akp7
 	"ERNIE-4.0-8K":       0.120 * RMB,
@@ -130,6 +132,7 @@ var ModelRatio = map[string]float64{
 	"SparkDesk-v3.1":            1.2858, // ￥0.018 / 1k tokens
 	"SparkDesk-v3.1-128K":       1.2858, // ￥0.018 / 1k tokens
 	"SparkDesk-v3.5":            1.2858, // ￥0.018 / 1k tokens
+	"SparkDesk-v3.5-32K":        1.2858, // ￥0.018 / 1k tokens
 	"SparkDesk-v4.0":            1.2858, // ￥0.018 / 1k tokens
 	"360GPT_S2_V9":              0.8572, // ¥0.012 / 1k tokens
 	"embedding-bert-512-v1":     0.0715, // ¥0.001 / 1k tokens
@@ -161,15 +164,21 @@ var ModelRatio = map[string]float64{
 	"mistral-embed":         0.1 / 1000 * USD,
 	// https://wow.groq.com/#:~:text=inquiries%C2%A0here.-,Model,-Current%20Speed
 	"gemma-7b-it":                           0.07 / 1000000 * USD,
-	"mixtral-8x7b-32768":                    0.24 / 1000000 * USD,
-	"llama3-8b-8192":                        0.05 / 1000000 * USD,
-	"llama3-70b-8192":                       0.59 / 1000000 * USD,
 	"gemma2-9b-it":                          0.20 / 1000000 * USD,
-	"llama-3.1-405b-reasoning":              0.89 / 1000000 * USD,
 	"llama-3.1-70b-versatile":               0.59 / 1000000 * USD,
 	"llama-3.1-8b-instant":                  0.05 / 1000000 * USD,
+	"llama-3.2-11b-text-preview":            0.05 / 1000000 * USD,
+	"llama-3.2-11b-vision-preview":          0.05 / 1000000 * USD,
+	"llama-3.2-1b-preview":                  0.05 / 1000000 * USD,
+	"llama-3.2-3b-preview":                  0.05 / 1000000 * USD,
+	"llama-3.2-90b-text-preview":            0.59 / 1000000 * USD,
+	"llama-guard-3-8b":                      0.05 / 1000000 * USD,
+	"llama3-70b-8192":                       0.59 / 1000000 * USD,
+	"llama3-8b-8192":                        0.05 / 1000000 * USD,
 	"llama3-groq-70b-8192-tool-use-preview": 0.89 / 1000000 * USD,
 	"llama3-groq-8b-8192-tool-use-preview":  0.19 / 1000000 * USD,
+	"mixtral-8x7b-32768":                    0.24 / 1000000 * USD,
+
 	// https://platform.lingyiwanwu.com/docs#-计费单元
 	"yi-34b-chat-0205": 2.5 / 1000 * RMB,
 	"yi-34b-chat-200k": 12.0 / 1000 * RMB,
@@ -200,6 +209,52 @@ var ModelRatio = map[string]float64{
 	"deepl-zh": 25.0 / 1000 * USD,
 	"deepl-en": 25.0 / 1000 * USD,
 	"deepl-ja": 25.0 / 1000 * USD,
+	// https://console.x.ai/
+	"grok-beta": 5.0 / 1000 * USD,
+	// replicate charges based on the number of generated images
+	// https://replicate.com/pricing
+	"black-forest-labs/flux-1.1-pro":                0.04 * USD,
+	"black-forest-labs/flux-1.1-pro-ultra":          0.06 * USD,
+	"black-forest-labs/flux-canny-dev":              0.025 * USD,
+	"black-forest-labs/flux-canny-pro":              0.05 * USD,
+	"black-forest-labs/flux-depth-dev":              0.025 * USD,
+	"black-forest-labs/flux-depth-pro":              0.05 * USD,
+	"black-forest-labs/flux-dev":                    0.025 * USD,
+	"black-forest-labs/flux-dev-lora":               0.032 * USD,
+	"black-forest-labs/flux-fill-dev":               0.04 * USD,
+	"black-forest-labs/flux-fill-pro":               0.05 * USD,
+	"black-forest-labs/flux-pro":                    0.055 * USD,
+	"black-forest-labs/flux-redux-dev":              0.025 * USD,
+	"black-forest-labs/flux-redux-schnell":          0.003 * USD,
+	"black-forest-labs/flux-schnell":                0.003 * USD,
+	"black-forest-labs/flux-schnell-lora":           0.02 * USD,
+	"ideogram-ai/ideogram-v2":                       0.08 * USD,
+	"ideogram-ai/ideogram-v2-turbo":                 0.05 * USD,
+	"recraft-ai/recraft-v3":                         0.04 * USD,
+	"recraft-ai/recraft-v3-svg":                     0.08 * USD,
+	"stability-ai/stable-diffusion-3":               0.035 * USD,
+	"stability-ai/stable-diffusion-3.5-large":       0.065 * USD,
+	"stability-ai/stable-diffusion-3.5-large-turbo": 0.04 * USD,
+	"stability-ai/stable-diffusion-3.5-medium":      0.035 * USD,
+	// replicate chat models
+	"ibm-granite/granite-20b-code-instruct-8k":  0.100 * USD,
+	"ibm-granite/granite-3.0-2b-instruct":       0.030 * USD,
+	"ibm-granite/granite-3.0-8b-instruct":       0.050 * USD,
+	"ibm-granite/granite-8b-code-instruct-128k": 0.050 * USD,
+	"meta/llama-2-13b":                          0.100 * USD,
+	"meta/llama-2-13b-chat":                     0.100 * USD,
+	"meta/llama-2-70b":                          0.650 * USD,
+	"meta/llama-2-70b-chat":                     0.650 * USD,
+	"meta/llama-2-7b":                           0.050 * USD,
+	"meta/llama-2-7b-chat":                      0.050 * USD,
+	"meta/meta-llama-3.1-405b-instruct":         9.500 * USD,
+	"meta/meta-llama-3-70b":                     0.650 * USD,
+	"meta/meta-llama-3-70b-instruct":            0.650 * USD,
+	"meta/meta-llama-3-8b":                      0.050 * USD,
+	"meta/meta-llama-3-8b-instruct":             0.050 * USD,
+	"mistralai/mistral-7b-instruct-v0.2":        0.050 * USD,
+	"mistralai/mistral-7b-v0.1":                 0.050 * USD,
+	"mistralai/mixtral-8x7b-instruct-v0.1":      0.300 * USD,
 }
 
 var CompletionRatio = map[string]float64{
@@ -351,6 +406,7 @@ func GetCompletionRatio(name string, channelType int) float64 {
 	if strings.HasPrefix(name, "deepseek-") {
 		return 2
 	}
+
 	switch name {
 	case "llama2-70b-4096":
 		return 0.8 / 0.64
@@ -364,6 +420,37 @@ func GetCompletionRatio(name string, channelType int) float64 {
 		return 3
 	case "command-r-plus":
 		return 5
+	case "grok-beta":
+		return 3
+	// Replicate Models
+	// https://replicate.com/pricing
+	case "ibm-granite/granite-20b-code-instruct-8k":
+		return 5
+	case "ibm-granite/granite-3.0-2b-instruct":
+		return 8.333333333333334
+	case "ibm-granite/granite-3.0-8b-instruct",
+		"ibm-granite/granite-8b-code-instruct-128k":
+		return 5
+	case "meta/llama-2-13b",
+		"meta/llama-2-13b-chat",
+		"meta/llama-2-7b",
+		"meta/llama-2-7b-chat",
+		"meta/meta-llama-3-8b",
+		"meta/meta-llama-3-8b-instruct":
+		return 5
+	case "meta/llama-2-70b",
+		"meta/llama-2-70b-chat",
+		"meta/meta-llama-3-70b",
+		"meta/meta-llama-3-70b-instruct":
+		return 2.750 / 0.650 // ≈4.230769
+	case "meta/meta-llama-3.1-405b-instruct":
+		return 1
+	case "mistralai/mistral-7b-instruct-v0.2",
+		"mistralai/mistral-7b-v0.1":
+		return 5
+	case "mistralai/mixtral-8x7b-instruct-v0.1":
+		return 1.000 / 0.300 // ≈3.333333
 	}
+
 	return 1
 }
