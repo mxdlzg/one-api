@@ -177,7 +177,7 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 		}
 		// Converting system prompt to SystemInstructions
 		if content.Role == "system" {
-			geminiRequest.SystemInstruction = content
+			geminiRequest.SystemInstruction = &content
 			continue
 		}
 		geminiRequest.Contents = append(geminiRequest.Contents, content)
