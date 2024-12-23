@@ -34,6 +34,12 @@ var mimeTypeMap = map[string]string{
 	"text":        "text/plain",
 }
 
+var toolChoiceTypeMap = map[string]string{
+	"none":     "NONE",
+	"auto":     "AUTO",
+	"required": "ANY",
+}
+
 // Setting safety to the lowest possible values since Gemini is already powerless enough
 func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 	geminiRequest := ChatRequest{
@@ -90,6 +96,24 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 			{
 				FunctionDeclarations: textRequest.Functions,
 			},
+		}
+	}
+	if textRequest.ToolChoice != nil {
+		geminiRequest.ToolConfig = ToolConfig{
+			FunctionCallingConfig: FunctionCallingConfig{
+				Mode: "auto",
+			},
+		}
+		switch mode := textRequest.ToolChoice.(type) {
+		case string:
+			geminiRequest.ToolConfig.FunctionCallingConfig.Mode = toolChoiceTypeMap[mode]
+		case map[string]interface{}:
+			geminiRequest.ToolConfig.FunctionCallingConfig.Mode = "ANY"
+			if fn, ok := mode["function"].(map[string]interface{}); ok {
+				if name, ok := fn["name"].(string); ok {
+					geminiRequest.ToolConfig.FunctionCallingConfig.AllowedFunctionNames = []string{name}
+				}
+			}
 		}
 	}
 	shouldAddDummyModelMessage := false
@@ -186,10 +210,13 @@ func (g *ChatResponse) GetResponseText() string {
 	if g == nil {
 		return ""
 	}
-	if len(g.Candidates) > 0 && len(g.Candidates[0].Content.Parts) > 0 {
-		return g.Candidates[0].Content.Parts[0].Text
+	var builder strings.Builder
+	for _, candidate := range g.Candidates {
+		for _, part := range candidate.Content.Parts {
+			builder.WriteString(part.Text)
+		}
 	}
-	return ""
+	return builder.String()
 }
 
 type ChatCandidate struct {

@@ -5,6 +5,7 @@ type ChatRequest struct {
 	SafetySettings   []ChatSafetySettings `json:"safety_settings,omitempty"`
 	GenerationConfig ChatGenerationConfig `json:"generation_config,omitempty"`
 	Tools            []ChatTools          `json:"tools,omitempty"`
+	ToolConfig       ToolConfig           `json:"tool_config,omitempty"`
 }
 
 type EmbeddingRequest struct {
@@ -73,4 +74,13 @@ type ChatGenerationConfig struct {
 	MaxOutputTokens  int      `json:"maxOutputTokens,omitempty"`
 	CandidateCount   int      `json:"candidateCount,omitempty"`
 	StopSequences    []string `json:"stopSequences,omitempty"`
+}
+
+type FunctionCallingConfig struct {
+	Mode                 string   `json:"mode,omitempty"`
+	AllowedFunctionNames []string `json:"allowed_function_names,omitempty"`
+}
+
+type ToolConfig struct {
+	FunctionCallingConfig FunctionCallingConfig `json:"function_calling_config"`
 }
