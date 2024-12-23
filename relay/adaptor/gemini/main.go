@@ -99,7 +99,7 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 		}
 	}
 	if textRequest.ToolChoice != nil {
-		geminiRequest.ToolConfig = ToolConfig{
+		geminiRequest.ToolConfig = &ToolConfig{
 			FunctionCallingConfig: FunctionCallingConfig{
 				Mode: "auto",
 			},

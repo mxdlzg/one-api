@@ -6,7 +6,7 @@ type ChatRequest struct {
 	SafetySettings    []ChatSafetySettings `json:"safety_settings,omitempty"`
 	GenerationConfig  ChatGenerationConfig `json:"generation_config,omitempty"`
 	Tools             []ChatTools          `json:"tools,omitempty"`
-	ToolConfig        ToolConfig           `json:"tool_config,omitempty"`
+	ToolConfig        *ToolConfig          `json:"tool_config,omitempty"`
 }
 
 type EmbeddingRequest struct {
