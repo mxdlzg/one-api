@@ -220,7 +220,10 @@ func (g *ChatResponse) GetResponseText() string {
 	}
 	var builder strings.Builder
 	for _, candidate := range g.Candidates {
-		for _, part := range candidate.Content.Parts {
+		for idx, part := range candidate.Content.Parts {
+			if idx > 0 {
+				builder.WriteString("\n")
+			}
 			builder.WriteString(part.Text)
 		}
 	}
@@ -287,8 +290,8 @@ func responseGeminiChat2OpenAI(response *ChatResponse) *openai.TextResponse {
 				choice.Message.ToolCalls = getToolCalls(&candidate)
 			} else {
 				var builder strings.Builder
-				for _, part := range candidate.Content.Parts {
-					if i > 0 {
+				for idx, part := range candidate.Content.Parts {
+					if idx > 0 {
 						builder.WriteString("\n")
 					}
 					builder.WriteString(part.Text)
