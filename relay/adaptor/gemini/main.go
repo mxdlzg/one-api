@@ -180,6 +180,7 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *ChatRequest {
 			geminiRequest.SystemInstruction = &content
 			continue
 		}
+
 		geminiRequest.Contents = append(geminiRequest.Contents, content)
 	}
 
